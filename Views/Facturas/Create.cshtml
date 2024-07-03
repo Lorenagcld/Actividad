@@ -1,0 +1,165 @@
+﻿@model PF.Models.CreateFacturaDto
+
+@{
+    ViewBag.Title = "Crear Factura";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2 class="text-center mb-4">Crear Factura</h2>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            @using (Html.BeginForm())
+            {
+                @Html.AntiForgeryToken()
+
+                <div class="card shadow">
+                    <div class="card-body">
+                        <h4 class="card-title mb-4 text-center">Detalles de la Factura</h4>
+
+                        @Html.ValidationSummary(true, "", new { @class = "alert alert-danger" })
+
+                        <div class="form-group row">
+                            @Html.Label("Seleccionar Cliente", htmlAttributes: new { @class = "col-sm-3 col-form-label text-right" })
+                            <div class="col-sm-9">
+                                @Html.DropDownList("IdCliente", (SelectList)ViewBag.Clientes, "Seleccionar Cliente", new { @class = "form-control", id = "IdCliente" })
+                            </div>
+                        </div>
+
+                        <div id="detalles-container">
+                            <h4>Productos</h4>
+                            <hr />
+                            <div class="detalle">
+                                <div class="form-row">
+                                    <div class="form-group col-md-4">
+                                        @Html.Label("Producto", htmlAttributes: new { @class = "col-form-label" })
+                                        @Html.DropDownList("Detalles[0].IdProducto", (SelectList)ViewBag.Productos, "Seleccionar Producto", new { @class = "form-control producto-select" })
+                                    </div>
+                                    <div class="form-group col-md-2">
+                                        @Html.Label("Precio", htmlAttributes: new { @class = "col-form-label" })
+                                        @Html.TextBox("Detalles[0].Precio", "", new { @class = "form-control precio-producto", type = "number", step = "0.01" })
+                                    </div>
+                                    <div class="form-group col-md-2">
+                                        @Html.Label("Cantidad", htmlAttributes: new { @class = "col-form-label" })
+                                        @Html.TextBox("Detalles[0].Cantidad", "", new { @class = "form-control cantidad-producto", type = "number", step = "1" })
+                                    </div>
+                                    <div class="form-group col-md-2">
+                                        @Html.Label("Descuento", htmlAttributes: new { @class = "col-form-label" })
+                                        @Html.TextBox("Detalles[0].Descuento", "", new { @class = "form-control descuento-producto", type = "number", step = "0.01" })
+                                    </div>
+                                    <div class="form-group col-md-2">
+                                        @Html.Label("Total", htmlAttributes: new { @class = "col-form-label" })
+                                        @Html.TextBox("Detalles[0].Total", "", new { @class = "form-control total-producto", type = "number", step = "0.01", disabled = "disabled" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <button type="button" id="agregar-detalle" class="btn btn-outline-primary">Agregar Producto</button>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label text-right">Subtotal</label>
+                            <div class="col-sm-9">
+                                @Html.TextBox("SubTotal", "", new { @class = "form-control", id = "SubTotal", disabled = "disabled" })
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label text-right">IVA (15%)</label>
+                            <div class="col-sm-9">
+                                @Html.TextBox("Iva", "", new { @class = "form-control", id = "Iva", disabled = "disabled" })
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label text-right">Total</label>
+                            <div class="col-sm-9">
+                                @Html.TextBox("Total", "", new { @class = "form-control", id = "Total", disabled = "disabled" })
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <div class="offset-sm-3 col-sm-9">
+                                <input type="submit" value="Crear" class="btn btn-primary btn-block" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var detalleIndex = 1;
+
+            $('#IdCliente').change(function () {
+                var idCliente = $(this).val();
+                $.getJSON('@Url.Action("BuscarClientePorId", "Facturas")', { idCliente: idCliente }, function (data) {
+                    if (data.success) {
+                        $('#IdCliente').val(data.cliente.idCliente);
+                        $('#ClienteNombres').val(data.cliente.Nombres);
+                        $('#ClienteApellidos').val(data.cliente.Apellidos);
+                        $('#ClienteDireccion').val(data.cliente.Direccion);
+                        $('#ClienteTelefono').val(data.cliente.Telefono);
+                    } else {
+                        alert(data.message);
+                    }
+                });
+            });
+
+            $('#detalles-container').on('change', '.producto-select', function () {
+                var select = $(this);
+                var idProducto = select.val();
+                $.getJSON('@Url.Action("BuscarProductoPorId", "Facturas")', { id: idProducto }, function (data) {
+                    if (data.success) {
+                        var detalle = select.closest('.detalle');
+                        detalle.find('.descripcion-producto').val(data.producto.Name);
+                        detalle.find('.precio-producto').val(data.producto.Precio);
+                    } else {
+                        alert(data.message);
+                    }
+                });
+            });
+
+            $('#agregar-detalle').click(function () {
+                var newDetalle = $('.detalle').first().clone();
+                newDetalle.find('select, input').each(function () {
+                    var name = $(this).attr('name');
+                    name = name.replace('[0]', '[' + detalleIndex + ']');
+                    $(this).attr('name', name);
+                    $(this).val('');
+                });
+                newDetalle.appendTo('#detalles-container');
+                detalleIndex++;
+            });
+
+            $('#detalles-container').on('input', 'input[name^="Detalles"]', function () {
+                calcularTotales();
+            });
+
+            function calcularTotales() {
+                var subtotal = 0;
+                $('div.detalle').each(function (index) {
+                    var cantidad = parseFloat($(this).find('input[name^="Detalles"][name$=".Cantidad"]').val()) || 0;
+                    var precio = parseFloat($(this).find('input[name^="Detalles"][name$=".Precio"]').val()) || 0;
+                    var descuento = parseFloat($(this).find('input[name^="Detalles"][name$=".Descuento"]').val()) || 0;
+                    var total = (cantidad * precio) - descuento;
+                    $(this).find('input[name^="Detalles"][name$=".Total"]').val(total.toFixed(2));
+                    subtotal += total;
+                });
+                var iva = subtotal * 0.15; // Asumiendo un IVA del 15%
+                var totalFactura = subtotal + iva;
+                $('#SubTotal').val(subtotal.toFixed(2));
+                $('#Iva').val(iva.toFixed(2));
+                $('#Total').val(totalFactura.toFixed(2));
+            }
+        });
+    </script>
+}

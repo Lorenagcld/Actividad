@@ -1,0 +1,85 @@
+﻿/* login.css */
+
+/* Estilos generales para el cuerpo y el fondo del video */
+
+body, html {
+    height: 100%;
+    margin: 0;
+    font-family: 'Bookman Old Style', sans-serif;
+    overflow: hidden; /* Evita barras de desplazamiento */
+}
+
+.bg-video {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index: -1;
+}
+
+    .bg-video video {
+        width: 100%;
+        height: auto;
+        object-fit: cover; /* Ajusta el tamaño del video para cubrir el contenedor */
+    }
+
+/* Estilos para el formulario de inicio de sesión */
+
+.card {
+    border: none; /* Sin borde */
+    max-width: 400px; /* Ancho máximo del formulario */
+    margin: 0 auto; /* Centra horizontalmente el formulario */
+    background-color: rgba(255, 255, 255, 0.8); /* Fondo semitransparente verde pastel */
+    padding: 20px; /* Espaciado interior */
+}
+
+.card-body {
+    padding: 20px;
+}
+
+.form-group {
+    margin-bottom: 15px; /* Margen inferior reducido */
+}
+
+.btn-primary {
+    background-color: rgb(137, 114, 177) /* Color de fondo del botón */
+    border: none; /* Sin borde */
+}
+
+    .btn-primary:hover {
+        background-color: #00ff90; /* Color de fondo al pasar el cursor por encima */
+    }
+
+.text-info {
+    color: #ff1493; /* Color de texto rosado */
+}
+
+    .text-info:hover {
+        text-decoration: underline;
+    }
+
+@keyframes bounce {
+    0%, 100% {
+        transform: translateY(-10px); /* Inicial y final, mover hacia arriba */
+    }
+
+    50% {
+        transform: translateY(10px); /* En el medio, mover hacia abajo */
+    }
+}
+
+@keyframes glow {
+    0% {
+        box-shadow: 0 0 20px rgba(0, 123, 255, 0.4); /* Sombra suave inicial */
+    }
+
+    50% {
+        box-shadow: 0 0 30px rgba(0, 123, 255, 0.6); /* Sombra más intensa en la mitad */
+    }
+
+    100% {
+        box-shadow: 0 0 20px rgba(0, 123, 255, 0.4); /* Vuelve a la sombra suave al final */
+    }
+}

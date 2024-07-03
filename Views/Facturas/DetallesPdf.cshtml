@@ -1,0 +1,79 @@
+﻿@model PF.Models.Factura
+
+@{
+    ViewBag.Title = "Detalles de Factura";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container">
+    <h2 class="text-center mb-4">Detalles de Factura</h2>
+
+    <div class="card shadow">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <h4 class="mb-3">Cliente</h4>
+                    <dl class="row">
+                        <dt class="col-sm-4">Nombre:</dt>
+                        <dd class="col-sm-8">@Model.Cliente.Nombres @Model.Cliente.Apellidos</dd>
+                        <dt class="col-sm-4">Dirección:</dt>
+                        <dd class="col-sm-8">@Model.Cliente.Direccion</dd>
+                        <dt class="col-sm-4">Teléfono:</dt>
+                        <dd class="col-sm-8">@Model.Cliente.Telefono</dd>
+                        <dt class="col-sm-4">Fecha:</dt>
+                        <dd class="col-sm-8">@Model.Fecha.ToShortDateString()</dd>
+                    </dl>
+                </div>
+                
+            </div>
+
+            <hr />
+
+            <h3 class="mb-4">Productos adquiridos:</h3>
+
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Producto</th>
+                            <th>Descripción</th>
+                            <th>Precio</th>
+                            <th>Cantidad</th>
+                            <th>Descuento</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var detalle in Model.FacturaDetalles)
+                        {
+                            <tr>
+                                <td>@detalle.Producto.Name</td>
+                                <td>@detalle.Producto.Name</td>
+                                <td>@detalle.Precio.ToString("C")</td>
+                                <td>@detalle.Cantidad</td>
+                                <td>@detalle.Descuento.ToString("C")</td>
+                                <td>@detalle.Total.ToString("C")</td>
+                            </tr>
+                        }
+                    </tbody>
+
+                </table>
+                <div class="col-md-6">
+                    <dl class="row">
+
+                        <dt class="col-sm-4">Subtotal:</dt>
+                        <dd class="col-sm-8">@Model.SubTotal.ToString("C")</dd>
+                        <dt class="col-sm-4">IVA (15%):</dt>
+                        <dd class="col-sm-8">@Model.Iva.ToString("C")</dd>
+                        <dt class="col-sm-4">Total:</dt>
+                        <dd class="col-sm-8">@Model.Total.ToString("C")</dd>
+                    </dl>
+                </div>
+            </div>
+
+            <div class="text-center mt-4">
+                @Html.ActionLink("Volver a la lista", "Index", null, new { @class = "btn btn-outline-secondary" })
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,59 @@
+﻿@model PF.ViewModel.LoginViewModel
+@{
+    ViewBag.Title = "Iniciar sesión";
+    Layout = null;
+}
+
+
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" />
+<link href="~/Content/login.css" rel="stylesheet" />
+
+<div class="bg-video">
+    <video autoplay muted loop>
+        <source src="~/Content/videos/login.mp4" type="video/mp4">
+    </video>
+</div>
+
+<div class="container">
+    <div class="row justify-content-center align-items-center vh-100">
+        <div class="col-md-6">
+            <div class="card shadow-lg">
+                <div class="card-body">
+                    <h2 class="text-center mb-4">Iniciar sesión</h2>
+                    @using (Html.BeginForm())
+                    {
+                        @Html.AntiForgeryToken()
+
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.Usuario, htmlAttributes: new { @class = "control-label" })
+                            @Html.TextBoxFor(m => m.Usuario, new { @class = "form-control", placeholder = "Ingrese su usuario" })
+                            @Html.ValidationMessageFor(m => m.Usuario, "", new { @class = "text-danger" })
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.Clave, htmlAttributes: new { @class = "control-label" })
+                            @Html.PasswordFor(m => m.Clave, new { @class = "form-control", placeholder = "Ingrese su contraseña" })
+                            @Html.ValidationMessageFor(m => m.Clave, "", new { @class = "text-danger" })
+                        </div>
+
+                        <div class="form-group form-check">
+                            @Html.CheckBoxFor(m => m.RememberMe, new { @class = "form-check-input" })
+                            @Html.LabelFor(m => m.RememberMe, new { @class = "form-check-label" })
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-block">Iniciar sesión</button>
+
+                        <div class="form-group text-center mt-3">
+                            @Html.ActionLink("¿Olvidaste tu contraseña?", "ForgotPassword", "Account", null, new { @class = "text-info" })
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+}
